@@ -1,2 +1,2 @@
 streamlit
-st-gsheets-conncection
+st-gsheets-connection
