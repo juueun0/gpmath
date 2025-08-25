@@ -38,7 +38,7 @@ if st.button("🔥결과 확인"):
             # 3. 두 번째 화면 구성 (필터링 결과에 따라)
             if not filtered_df.empty:
                 st.success(f"{student_name} 학생, 환영합니다! 🎉")
-                filtered_df = filtered_df.iloc[:, :7]  # 여기만 수정!!!!
+                filtered_df = filtered_df.iloc[:, :15]  # 여기만 수정!!!!
                 st.write("### 학습지 제출 현황 및 점수")
                 st.dataframe(filtered_df)
 
