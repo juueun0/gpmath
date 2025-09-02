@@ -38,9 +38,21 @@ if st.button("🔥결과 확인"):
             # 3. 두 번째 화면 구성 (필터링 결과에 따라)
             if not filtered_df.empty:
                 st.success(f"{student_name} 학생, 환영합니다! 🎉")
-                filtered_df = filtered_df.iloc[:, :15]  # 여기만 수정!!!!
-                st.write("### 학습지 제출 현황 및 점수")
-                st.dataframe(filtered_df)
+                
+                # 🔹 변경: 학번과 이름을 별도로 표시
+                st.markdown(f"**학번:** {filtered_df.iloc[0, 0]}")
+                st.markdown(f"**이름:** {filtered_df.iloc[0, 1]}")
+
+                # 🔹 변경: 3열~15열 데이터 한 줄에 표시
+                table_part1 = filtered_df.iloc[:, 2:15]  # 3열 ~ 15열
+                table_part2 = filtered_df.iloc[:, 15:22]   # 16열 ~
+
+                st.write("#### 1️⃣ 1단원 제출 현황(9/1(월) 마감)")
+                st.dataframe(table_part1)
+
+                if not table_part2.empty:
+                    st.write("#### 2️⃣ 2단원 제출 현황")
+                    st.dataframe(table_part2)
 
                 # 안내 사항
                 st.markdown(
