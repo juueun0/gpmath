@@ -51,7 +51,7 @@ if st.button("🔥결과 확인"):
                 st.dataframe(table_part1)
 
                 if not table_part2.empty:
-                    st.write("#### 2️⃣ 2단원 제출 현황(9/22(월) 마감예정)")
+                    st.write("#### 2️⃣ 2단원 제출 현황(9/22(월) 마감)")
                     st.dataframe(table_part2)
 
                 # 안내 사항
