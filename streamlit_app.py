@@ -56,7 +56,7 @@ if st.button("🔥결과 확인"):
                     st.dataframe(table_part2)
 
                 if not table_part3.empty:
-                    st.write("#### 2️⃣-2 2단원(기말범위) 제출 현황(10/31(금) 마감예정)")
+                    st.write("#### 2️⃣-2 2단원(기말범위) 제출 현황(10/31(금) 마감)")
                     st.dataframe(table_part3)
 
                 # 안내 사항
@@ -70,6 +70,95 @@ if st.button("🔥결과 확인"):
                     """,
                     unsafe_allow_html=True
                 )
+
+                # ---------------------------
+                # ★ 추가: <수행평가 점수 확인> 섹션 (AY~BB, AV, AW, AX)
+                #   - 1) 포트폴리오: AY,AZ,BA 표 + BB(강조) + "최종 점수: BB/20점"
+                #   - 2) 매쓰티콘: "최종 점수: AV/10점"
+                #   - 3) 수학 프로젝트: (1) AW/4, (2) AX/16, (3) (AW+AX)/20
+                #   열 인덱스(0부터): AV=47, AW=48, AX=49, AY=50, AZ=51, BA=52, BB=53
+                # ---------------------------
+                st.write("---")  # ★ 추가
+                st.markdown("### 📌 수행평가 점수 확인")  # ★ 추가
+
+                # 숫자/결측 안전 포맷터  # ★ 추가
+                def _fmt(x):  # ★ 추가
+                    try:  # ★ 추가
+                        if pd.isna(x):  # ★ 추가
+                            return "—"  # ★ 추가
+                        xf = float(x)  # ★ 추가
+                        return str(int(xf)) if xf.is_integer() else str(xf)  # ★ 추가
+                    except Exception:  # ★ 추가
+                        return str(x) if x is not None else "—"  # ★ 추가
+
+                # ==== 1) 포트폴리오 ====  # ★ 추가
+                st.markdown("#### 1. 포트폴리오")  # ★ 추가
+                try:  # ★ 추가
+                    col_AY, col_AZ, col_BA, col_BB = df.columns[50], df.columns[51], df.columns[52], df.columns[53]  # ★ 추가
+
+                    # AY, AZ, BA: 1행 표(헤더 포함)  # ★ 추가
+                    pf_table = filtered_df[[col_AY, col_AZ, col_BA]].reset_index(drop=True)  # ★ 추가
+                    st.dataframe(pf_table, use_container_width=True)  # ★ 추가
+
+                    # BB: 내용만 별도 강조  # ★ 추가
+                    bb_val_raw = filtered_df.iloc[0, 53]  # ★ 추가
+                    bb_val = _fmt(bb_val_raw)  # ★ 추가
+
+                    st.markdown(
+                    """
+                    <span style="color:red; font-weight:bold;">
+                    ⭐ 해당 점수는 적분 파트 성찰일지까지 포함하지 않은 점수입니다.
+                    </span><br>   
+                    <span style="color:blue; font-weight:bold;">
+                    ⭐ 점수는 변동되니 마지막 성찰일지까지 최선을 다해주세요 :)
+                    </span><br>    
+                    """,
+                    unsafe_allow_html=True
+                )
+                    st.write("\n")
+
+                    # "최종 점수: {BB}/20점"  # ★ 추가
+                    st.markdown(f"**최종 점수: {bb_val}/20점**")  # ★ 추가
+                except Exception as e:  # ★ 추가
+                    st.warning(f"포트폴리오(AY~BB) 표시 중 오류가 발생했습니다: {e}")  # ★ 추가
+
+                st.write("\n")
+                
+                # ==== 2) 매쓰티콘 ====  # ★ 추가
+                st.markdown("#### 2. 매쓰티콘(추후 안내)")  # ★ 추가
+                try:  # ★ 추가
+                    av = _fmt(filtered_df.iloc[0, 47])  # AV  # ★ 추가
+                    st.markdown(f"**최종 점수: {av}/10점**")  # ★ 추가
+                except Exception as e:  # ★ 추가
+                    st.warning(f"매쓰티콘(AV) 표시 중 오류가 발생했습니다: {e}")  # ★ 추가
+
+                st.write("\n")
+                
+                # ==== 3) 수학 프로젝트 ====  # ★ 추가
+                st.markdown("#### 3. 수학 프로젝트(추후 안내)")  # ★ 추가
+                try:  # ★ 추가
+                    aw_raw = filtered_df.iloc[0, 48]  # AW  # ★ 추가
+                    ax_raw = filtered_df.iloc[0, 49]  # AX  # ★ 추가
+                    aw = _fmt(aw_raw)  # ★ 추가
+                    ax = _fmt(ax_raw)  # ★ 추가
+
+                    # 합계(결측/문자 안전 합산)  # ★ 추가
+                    try:  # ★ 추가
+                        aw_num = float(aw_raw) if pd.notna(aw_raw) else 0.0  # ★ 추가
+                    except Exception:  # ★ 추가
+                        aw_num = 0.0  # ★ 추가
+                    try:  # ★ 추가
+                        ax_num = float(ax_raw) if pd.notna(ax_raw) else 0.0  # ★ 추가
+                    except Exception:  # ★ 추가
+                        ax_num = 0.0  # ★ 추가
+                    total = aw_num + ax_num  # ★ 추가
+                    total_str = _fmt(total)  # ★ 추가
+
+                    st.markdown(f"(1) 개요: {aw}/4점")  # ★ 추가
+                    st.markdown(f"(2) 보고서: {ax}/16점")  # ★ 추가
+                    st.markdown(f"(3) **최종 점수: {total_str}/20점**")  # ★ 추가
+                except Exception as e:  # ★ 추가
+                    st.warning(f"수학 프로젝트(AW, AX) 표시 중 오류가 발생했습니다: {e}")  # ★ 추가
             else:
                 st.error("학번과 이름이 올바르지 않습니다. 다시 확인해주세요.")
         except KeyError as ke:
