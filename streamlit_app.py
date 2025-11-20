@@ -16,6 +16,32 @@ except Exception as e:
     st.error(f"구글 시트 데이터를 불러오는 데 실패했습니다. secrets.toml 파일의 URL을 확인해주세요. 오류: {e}")
     st.stop()
 
+# ---------------------------
+# ★ 추가된 부분: 값이 1이면 연두색으로 칠해주는 스타일 함수
+# ---------------------------
+def _is_one(val):
+    try:
+        if pd.isna(val):
+            return False
+        num = float(val)
+        return num == 1.0
+    except:
+        return str(val).strip() == "1"
+
+def highlight_one(cell):
+    return "background-color: #ccffcc" if _is_one(cell) else ""
+
+# ---------------------------
+# 정수이면 1, 아니면 그대로 표시하는 포맷터
+# ---------------------------
+def _fmt(x):
+    try:
+        if pd.isna(x):
+            return "—"
+        xf = float(x)
+        return str(int(xf)) if xf.is_integer() else str(xf)
+    except:
+        return str(x) if x is not None else "—"
 
 # 2. 첫 화면 구성
 st.title("2025학년도 개포고등학교 수학Ⅱ 성찰일지 확인표📚")
@@ -47,23 +73,28 @@ if st.button("🔥결과 확인"):
                 table_part1 = filtered_df.iloc[:, 2:15]  # 3열 ~ 15열
                 table_part2 = filtered_df.iloc[:, 15:27]   # 16열 ~
                 table_part3 = filtered_df.iloc[:, 27:33]   # 28열 ~ 33열
+                table_part4 = filtered_df.iloc[:, 33:47]   # 34열 ~ 47열
 
                 st.write("#### 1️⃣ 1단원 제출 현황(9/1(월) 마감)")
-                st.dataframe(table_part1)
+                st.dataframe(table_part1.style.format(_fmt).applymap(highlight_one))
 
                 if not table_part2.empty:
                     st.write("#### 2️⃣-1 2단원(중간범위) 제출 현황(9/22(월) 마감)")
-                    st.dataframe(table_part2)
+                    st.dataframe(table_part2.style.format(_fmt).applymap(highlight_one))
 
                 if not table_part3.empty:
                     st.write("#### 2️⃣-2 2단원(기말범위) 제출 현황(10/31(금) 마감)")
-                    st.dataframe(table_part3)
+                    st.dataframe(table_part3.style.format(_fmt).applymap(highlight_one))
+
+                if not table_part4.empty:
+                    st.write("#### 3️⃣ 3단원 제출 현황(11/28(금) 마감 예정)")
+                    st.dataframe(table_part4.style.format(_fmt).applymap(highlight_one))
 
                 # 안내 사항
                 st.markdown(
                     """
                     <span style="color:red; font-weight:bold;">
-                    ⭐ 2단원(기말범위) 포트폴리오 검사 마감: 10/31(금) 16:00
+                    ⭐ 3단원 포트폴리오 검사 마감: 11/28(금) 16:00
                     </span><br>  
                     - 표시 구분: 1(제출 및 통과), 0.5(제출은 했으나 미흡), 0(미제출 또는 빈종이)<br>  
                     - 도장을 받았는데 점수가 다를 경우, 성찰일지가 없을 경우 등은 선생님께 문의할 것  
@@ -71,13 +102,7 @@ if st.button("🔥결과 확인"):
                     unsafe_allow_html=True
                 )
 
-                # ---------------------------
-                # ★ 추가: <수행평가 점수 확인> 섹션 (AY~BB, AV, AW, AX)
-                #   - 1) 포트폴리오: AY,AZ,BA 표 + BB(강조) + "최종 점수: BB/20점"
-                #   - 2) 매쓰티콘: "최종 점수: AV/10점"
-                #   - 3) 수학 프로젝트: (1) AW/4, (2) AX/16, (3) (AW+AX)/20
-                #   열 인덱스(0부터): AV=47, AW=48, AX=49, AY=50, AZ=51, BA=52, BB=53
-                # ---------------------------
+                
                 st.write("---")  # ★ 추가
                 st.markdown("### 📌 수행평가 점수 확인")  # ★ 추가
 
@@ -107,10 +132,7 @@ if st.button("🔥결과 확인"):
                     st.markdown(
                     """
                     <span style="color:red; font-weight:bold;">
-                    ⭐ 해당 점수는 적분 파트 성찰일지까지 포함하지 않은 점수입니다.
-                    </span><br>   
-                    <span style="color:blue; font-weight:bold;">
-                    ⭐ 점수는 변동되니 마지막 성찰일지까지 최선을 다해주세요 :)
+                    ⭐ 마감일 전까지 점수는 변동되니 마지막 성찰일지까지 최선을 다해주세요 :)
                     </span><br>    
                     """,
                     unsafe_allow_html=True
