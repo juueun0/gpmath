@@ -121,11 +121,11 @@ if st.button("🔥결과 확인"):
                 try:  # ★ 추가
                     col_AY, col_AZ, col_BA, col_BB = df.columns[50], df.columns[51], df.columns[52], df.columns[53]  # ★ 추가
 
-                    # AY, AZ, BA: 1행 표(헤더 포함)  # ★ 추가
-                    pf_table = filtered_df[[col_AY, col_AZ, col_BA]].reset_index(drop=True)  # ★ 추가
+                    # AY, AZ, BA: 1행 표(헤더 포함)  
+                    pf_table = filtered_df[[col_AY, col_AZ, col_BA]].reset_index(drop=True)  
                     st.dataframe(pf_table, use_container_width=True)  # ★ 추가
 
-                    # BB: 내용만 별도 강조  # ★ 추가
+                    # BB: 내용만 별도 강조  
                     bb_val_raw = filtered_df.iloc[0, 53]  # ★ 추가
                     bb_val = _fmt(bb_val_raw)  # ★ 추가
 
@@ -143,11 +143,36 @@ if st.button("🔥결과 확인"):
                     st.markdown(f"**최종 점수: {bb_val}/20점**")  # ★ 추가
                 except Exception as e:  # ★ 추가
                     st.warning(f"포트폴리오(AY~BB) 표시 중 오류가 발생했습니다: {e}")  # ★ 추가
-
-                st.write("\n")
                 
+
+                # 표 데이터 만들기
+                data = {
+                    "성취도 구간": [
+                        "80% 초과",
+                        "70% 초과 ~ 80% 이하",
+                        "60% 초과 ~ 70% 이하",
+                        "50% 초과 ~ 60% 이하",
+                        "40% 초과 ~ 50% 이하",
+                        "30% 초과 ~ 40% 이하",
+                        "20% 초과 ~ 30% 이하",
+                        "10% 초과 ~ 20% 이하",
+                        "0% 초과 ~ 10% 이하",
+                        "0%"
+                    ],
+                    "점수": [20, 19, 18, 17, 16, 15, 14, 13, 12, 10]
+                }
+
+                df = pd.DataFrame(data)
+
+                # 토글(expander) 안에 표 넣기
+                with st.expander("📘 매쓰티콘 채점 기준표 보기"):
+                    st.dataframe(df, use_container_width=True)
+
+                
+                st.write("\n")
+
                 # ==== 2) 매쓰티콘 ====  # ★ 추가
-                st.markdown("#### 2. 매쓰티콘(추후 안내)")  # ★ 추가
+                st.markdown("#### 2. 매쓰티콘")  # ★ 추가
                 try:  # ★ 추가
                     av = _fmt(filtered_df.iloc[0, 47])  # AV  # ★ 추가
                     st.markdown(f"**최종 점수: {av}/10점**")  # ★ 추가
@@ -157,7 +182,7 @@ if st.button("🔥결과 확인"):
                 st.write("\n")
                 
                 # ==== 3) 수학 프로젝트 ====  # ★ 추가
-                st.markdown("#### 3. 수학 프로젝트(추후 안내)")  # ★ 추가
+                st.markdown("#### 3. 수학 프로젝트(보고서 점수는 추후 안내)")  # ★ 추가
                 try:  # ★ 추가
                     aw_raw = filtered_df.iloc[0, 48]  # AW  # ★ 추가
                     ax_raw = filtered_df.iloc[0, 49]  # AX  # ★ 추가
