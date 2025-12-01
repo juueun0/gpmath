@@ -87,22 +87,9 @@ if st.button("🔥결과 확인"):
                     st.dataframe(table_part3.style.format(_fmt).applymap(highlight_one))
 
                 if not table_part4.empty:
-                    st.write("#### 3️⃣ 3단원 제출 현황(11/28(금) 마감 예정)")
+                    st.write("#### 3️⃣ 3단원 제출 현황(11/28(금) 마감)")
                     st.dataframe(table_part4.style.format(_fmt).applymap(highlight_one))
 
-                # 안내 사항
-                st.markdown(
-                    """
-                    <span style="color:red; font-weight:bold;">
-                    ⭐ 3단원 포트폴리오 검사 마감: 11/28(금) 16:00
-                    </span><br>  
-                    - 표시 구분: 1(제출 및 통과), 0.5(제출은 했으나 미흡), 0(미제출 또는 빈종이)<br>  
-                    - 도장을 받았는데 점수가 다를 경우, 성찰일지가 없을 경우 등은 선생님께 문의할 것  
-                    """,
-                    unsafe_allow_html=True
-                )
-
-                
                 st.write("---")  # ★ 추가
                 st.markdown("### 📌 수행평가 점수 확인")  # ★ 추가
 
@@ -129,14 +116,6 @@ if st.button("🔥결과 확인"):
                     bb_val_raw = filtered_df.iloc[0, 53]  # ★ 추가
                     bb_val = _fmt(bb_val_raw)  # ★ 추가
 
-                    st.markdown(
-                    """
-                    <span style="color:red; font-weight:bold;">
-                    ⭐ 마감일 전까지 점수는 변동되니 마지막 성찰일지까지 최선을 다해주세요 :)
-                    </span><br>    
-                    """,
-                    unsafe_allow_html=True
-                )
                     st.write("\n")
 
                     # "최종 점수: {BB}/20점"  # ★ 추가
@@ -165,11 +144,11 @@ if st.button("🔥결과 확인"):
                 df = pd.DataFrame(data)
 
                 # 토글(expander) 안에 표 넣기
-                with st.expander("📘 매쓰티콘 채점 기준표 보기"):
+                with st.expander("📘 포트폴리오 채점 기준표 보기"):
                     st.dataframe(df, use_container_width=True)
 
                 
-                st.write("\n")
+                st.write("---")
 
                 # ==== 2) 매쓰티콘 ====  # ★ 추가
                 st.markdown("#### 2. 매쓰티콘")  # ★ 추가
@@ -179,7 +158,8 @@ if st.button("🔥결과 확인"):
                 except Exception as e:  # ★ 추가
                     st.warning(f"매쓰티콘(AV) 표시 중 오류가 발생했습니다: {e}")  # ★ 추가
 
-                st.write("\n")
+                st.write("---")
+
                 
                 # ==== 3) 수학 프로젝트 ====  # ★ 추가
                 st.markdown("#### 3. 수학 프로젝트(보고서 점수는 추후 안내)")  # ★ 추가
